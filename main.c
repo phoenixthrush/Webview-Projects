@@ -18,7 +18,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine,
 int main() {
 #endif
   webview_t w = webview_create(0, NULL);
-  webview_set_size(w, 350, 500, WEBVIEW_HINT_NONE);
+  webview_set_size(w, 350, 500, WEBVIEW_HINT_FIXED);
   webview_set_html(w, (const char *)site_index_html);
   webview_run(w);
   webview_destroy(w);
