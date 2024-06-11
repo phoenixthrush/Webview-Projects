@@ -1,7 +1,9 @@
-# MacOS
-rm -rf main.app Resources Info.plist
+#!/bin/bash
 
-python3 -m nuitka --include-data-files=site/index.html=index.html --assume-yes-for-downloads --remove-output --macos-create-app-bundle --macos-app-icon=site/assets/icon.png --macos-signed-app-name=com.Phoenixthrush.Keygen --macos-app-name=Keygen --company-name=phoenixthrush main.py
-# --linux-icon=site/assets/icon.ico
-
-rm -rf Info.plist Resources _CodeSignature
+if [ "$(uname)" == "Darwin" ]; then
+  # MacOS
+  python3 -m nuitka --include-data-files=site/index.html=index.html --assume-yes-for-downloads --remove-output --macos-create-app-bundle --macos-app-icon=site/assets/icon.png --macos-signed-app-name=com.Phoenixthrush.Keygen main.py
+else
+  # Linux
+  python3 -m nuitka --include-data-files=site/index.html=index.html --assume-yes-for-downloads --remove-output --onefile --linux-icon=site/assets/icon.png main.py
+fi
