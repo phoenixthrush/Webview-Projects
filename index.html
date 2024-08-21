@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        img {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .toggle-element {
+            z-index: 1;
+            display: none;
+        }
+
+        .bsod {
+            display: none;
+            z-index: 3;
+        }
+
+        .yuuko2 {
+            display: none;
+            z-index: 2;
+        }
+
+        .gawd {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            height: 30%;
+            width: auto;
+            z-index: 2;
+            display: none; 
+        }
+
+        #hiddenAudio {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img class="toggle-element" src="images/circle.png">
+        <img src="images/yuuko.png">
+        <img src="images/gawd.png" class="gawd">
+        <img src="images/bsod.png" class="bsod">
+        <img src="images/yuuko2.jpeg" class="yuuko2">
+    </div>
+
+    <audio id="hiddenAudio" autoplay>
+        <source src="audio/audio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('hiddenAudio');
+
+            if (audio) {
+                audio.play().catch(error => {
+                    console.log('Autoplay was prevented:', error);
+                });
+            }
+
+            setTimeout(() => {
+                toggleVisibility('.toggle-element', 4, 200);
+            }, 2000);
+        });
+
+        function toggleVisibility(selector, times, delay) {
+            const element = document.querySelector(selector);
+            let count = 0;
+
+            function toggle() {
+                if (count < times) {
+                    if (element.style.display === 'none') {
+                        element.style.display = 'block';
+                    } else {
+                        element.style.display = 'none';
+                    }
+
+                    count++;
+                    setTimeout(toggle, delay);
+                } else {
+                    element.style.display = 'none';
+
+                    setTimeout(() => {
+                        document.querySelector('.gawd').style.display = 'block';
+
+                        setTimeout(() => {
+                            element.style.display = 'block';
+                            setTimeout(() => {
+                                element.style.display = 'none';
+                                document.querySelector('.yuuko2').style.display = 'block';
+
+                                setTimeout(() => {
+                                    document.querySelector('.bsod').style.display = 'block';
+
+                                    setTimeout(() => {
+                                        window.close();
+                                    }, 5000);
+                                }, 2000);
+                            }, delay);
+                        }, 1000); 
+                    }, 1000); 
+                }
+            }
+
+            toggle();
+        }
+    </script>
+</body>
+
+</html>
