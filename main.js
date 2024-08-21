@@ -1,6 +1,4 @@
 const { app, BrowserWindow, screen } = require('electron');
-const path = require('path');
-const { exec } = require('child_process');
 
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
@@ -14,8 +12,8 @@ function createWindow() {
     resizable: false,
     movable: false,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true
+      nodeIntegration: false,
+      contextIsolation: true,
     }
   });
 
@@ -26,22 +24,10 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
 
+  // quit after ten seconds
   setTimeout(() => {
-    if (process.platform === 'win32') {
-      const command = 'notepad.exe'; 
-      exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error executing command: ${error.message}`);
-          return;
-        }
-        if (stderr) {
-          console.error(`stderr: ${stderr}`);
-          return;
-        }
-        console.log(`stdout: ${stdout}`);
-      });
-    }
-  }, 7000); 
+    app.quit();
+  }, 10000);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
