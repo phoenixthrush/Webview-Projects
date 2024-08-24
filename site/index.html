@@ -170,33 +170,50 @@
                 cvv: cvv
             };
 
-            fetch("http://localhost:3000/credit-card/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.text().then(text => {
-                            console.log("Success:", text);
-                            document.getElementById("error-message").style.display = 'none';
-                            alert('Data submitted successfully!');
-                        });
-                    } else {
-                        return response.text().then(text => {
+            function isServerReachable(url) {
+                return fetch(url, { method: 'GET', mode: 'no-cors' })
+                    .then(response => response.ok || response.status === 0)
+                    .catch(() => false);
+            }
+
+            const serverUrl = "http://localhost:3000/credit-card/";
+
+            isServerReachable(serverUrl).then(serverAvailable => {
+                if (serverAvailable) {
+                    fetch(serverUrl, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                return response.text().then(text => {
+                                    console.log("Success:", text);
+                                    document.getElementById("error-message").style.display = 'none';
+                                    alert('Data submitted successfully!');
+                                });
+                            } else {
+                                return response.text().then(text => {
+                                    document.getElementById("error-message").textContent = 'The credit card is invalid. :(';
+                                    document.getElementById("error-message").style.display = 'block';
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error:", error);
                             document.getElementById("error-message").textContent = 'The credit card is invalid. :(';
                             document.getElementById("error-message").style.display = 'block';
                         });
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    document.getElementById("error-message").textContent = 'The credit card is invalid. :(';
+                } else {
+                    document.getElementById("error-message").textContent = 'Server is not reachable.';
                     document.getElementById("error-message").style.display = 'block';
-                });
+                }
+            });
         });
+    </script>
+
     </script>
 </body>
 
