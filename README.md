@@ -19,7 +19,7 @@ git clone https://github.com/phoenixthrush/Webview-Projects.git
 
 ### Keygen Template
 
-<img src=".github/keygen-template.png" alt="keygen-template.png" style="height: 500px; width: auto;">
+<img src=".github/keygen-template.png" alt="keygen-template.png" style="width: 50%;">
 
 ### Usage
 
@@ -32,7 +32,7 @@ make
 
 ### Keygen Template PyWebview
 
-<img src=".github/keygen-template-pywebview.png" alt="keygen-template-pywebview.png" style="height: 500px; width: auto;">
+<img src=".github/keygen-template-pywebview.png" alt="keygen-template-pywebview.png"  style="width: 50%;">
 
 ### Usage
 
