@@ -54,7 +54,7 @@ compile
 
 ### Senpai Malware
 
-<img src=".github/senpai-malware.png" alt="senpai-malware.png" style="height: 500px; width: auto;">
+![senpai-malware.png](.github/senpai-malware.png)
 
 ### Usage
 
