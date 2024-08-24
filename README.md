@@ -19,7 +19,7 @@ git clone https://github.com/phoenixthrush/Webview-Projects.git
 
 ### Keygen Template
 
-![AniWorld Downloader - Demo](.github/keygen-template.png)
+<img src=".github/keygen-template.png" alt="keygen-template.png" style="width: auto; height: 600px;">
 
 ### Usage
 
@@ -32,7 +32,7 @@ make
 
 ### Keygen Template PyWebview
 
-![AniWorld Downloader - Demo](.github/keygen-template-pywebview.png)
+<img src=".github/keygen-template-pywebview.png" alt="keygen-template-pywebview.png" style="width: auto; height: 600px">
 
 ### Usage
 
@@ -54,7 +54,7 @@ compile
 
 ### Senpai Malware
 
-![AniWorld Downloader - Demo](.github/senpai-malware.png)
+![senpai-malware.png](.github/senpai-malware.png)
 
 ### Usage
 
@@ -67,7 +67,7 @@ make
 
 ### Yuuko BSOD
 
-![AniWorld Downloader - Demo](.github/yuuko-bsod.png)
+![yuuko-bsod.png](.github/yuuko-bsod.png)
 
 ### Usage
 
