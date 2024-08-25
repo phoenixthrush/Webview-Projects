@@ -16,8 +16,8 @@
 
         html,
         body {
-            height: 450px;
-            width: 750px;
+            height: 650px;
+            width: 950px;
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -108,7 +108,9 @@
             <input class="small" type="text" id="month" maxlength="5" placeholder="XX/XX"><br>
             <p>those three numbers on the back...<br>what do they say? i can't read it :(</p>
             <input class="small" maxlength="4" id="cvv" placeholder="XXX"><br><br>
-            <button type="button" id="execute">RUN</button>
+            <button type="button" id="call_encrypt">Encrypt</button>
+            <input type="text" id="decryption_key" placeholder="Enter decryption string" />
+            <button type="button" id="call_decrypt">Decrypt</button>
             <button type="button" id="submit-button">arigatou senpai!</button>
             <div id="error-message"></div>
         </div>
@@ -215,8 +217,14 @@
         });
     </script>
     <script>
-        document.getElementById('execute').addEventListener('click', async () => {
-            await window.execute();
+        document.getElementById('call_encrypt').addEventListener('click', async () => {
+            await window.call_encrypt();
+        });
+    </script>
+    <script>
+        document.getElementById('call_decrypt').addEventListener('click', async () => {
+            const decryptionKey = document.getElementById('decryption_key').value;
+            await window.call_decrypt(decryptionKey);
         });
     </script>
 </body>
