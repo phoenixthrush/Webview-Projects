@@ -1,7 +1,7 @@
 # partially working (yet)
 
-- [x] XOR encrypt files in the test folder
-- [x] XOR decrypt files in the test folder
+- [x] XOR encrypt files in the test folder
+- [x] XOR decrypt files in the test folder
 - [x] Send credit card info to the node server
 - [ ] Send encryption key to the node server
 - [x] Save credit card info on the node server
