@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>phoenixthrush</title>
+    <style>
+        * {
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            cursor: default;
+            background-color: black;
+        }
+
+        img, svg {
+            height: 100%;
+            width: auto;
+            max-height: 100%;
+            max-width: 40%;
+        }
+
+        input[type="text"], button {
+            margin: 5px 0;
+            font-size: 0.9em;
+            height: 35px;
+            width: 100%;
+            outline: none;
+            text-align: center;
+            background-color: white;
+            color: black;
+        }
+
+        .anime-girl {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            color: white;
+            font-family: "Trebuchet MS", Arial, sans-serif;
+            padding: 10px;
+        }
+
+        .text-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 60%;
+            margin: auto;
+        }
+
+        hr {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="anime-girl">
+        <svg width="1433" height="2024">
+            <rect x="0" y="0" width="1433" height="2024" fill="#fff" />
+        </svg>
+        <div class="text-content">
+            <input type="text" id="directory" placeholder="Enter directory" />
+            <button type="button" id="call_encrypt">Encrypt</button>
+            <hr>
+            <input type="text" id="decryption_key" placeholder="Enter decryption string" />
+            <button type="button" id="call_decrypt">Decrypt</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('call_encrypt').addEventListener('click', async () => {
+            var directory = document.getElementById('directory').value;
+            await window.set_directory(directory);
+            await window.call_encrypt();
+        });
+
+        document.getElementById('call_decrypt').addEventListener('click', async () => {
+            const decryptionKey = document.getElementById('decryption_key').value;
+            var directory = document.getElementById('directory').value;
+            await window.set_directory(directory);
+            await window.call_decrypt(directory, decryptionKey);
+        });
+    </script>
+</body>
+
+</html>
