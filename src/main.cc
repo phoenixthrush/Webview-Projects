@@ -11,7 +11,7 @@ int main() {
 #endif
   try {
     webview::webview w(false, nullptr);
-    w.set_title("Keygen Template");
+    w.set_title("Senpai Malware");
     w.set_size(750, 475, WEBVIEW_HINT_NONE);
     w.set_html((const char *)site_index_html);
     w.run();
