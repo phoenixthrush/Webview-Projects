@@ -1,2 +1,3 @@
 src/build/
 src/server/package-lock.json
+src/html.c
