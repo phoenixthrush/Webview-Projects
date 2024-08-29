@@ -1,3 +1,2 @@
-build/
-libs/
-server/package-lock.json
+src/build/
+src/server/package-lock.json
