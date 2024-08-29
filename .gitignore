@@ -1,2 +1,2 @@
-build/
-html.c
+src/build/
+src/html.c
