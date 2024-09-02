@@ -1,4 +1,98 @@
+#include "webview.h"
 #include <stdio.h>
+#include <stddef.h>
+
+#include <ostream>
+#include <iostream>
+
+#include "html.c"
+
+/* select_folder */
+std::string select_folder() {
+    std::string folderPath;
+
+#ifdef _WIN32
+    BROWSEINFO bi = {0};
+    bi.ulFlags = BIF_USENEWUI | BIF_NEWDIALOGSTYLE;
+    LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
+    if (pidl) {
+        char path[MAX_PATH];
+        if (SHGetPathFromIDList(pidl, path)) {
+            folderPath = path;
+        }
+        CoTaskMemFree(pidl);
+    }
+#elif __APPLE__
+    FILE *fp = popen("osascript -e 'set folderPath to POSIX path of (choose folder)' -e 'return folderPath'", "r");
+    if (fp == NULL) {
+        perror("Error executing AppleScript");
+        return "";
+    }
+
+    char *line = nullptr;
+    size_t len = 0;
+    ssize_t read;
+
+    if ((read = getline(&line, &len, fp)) != -1) {
+        if (read > 0 && line[read - 1] == '\n') {
+            line[read - 1] = '\0';
+        }
+        folderPath = line;
+        free(line);
+    }
+
+    pclose(fp);
+#elif __linux__
+    FILE *fp = NULL;
+
+    fp = popen("kdialog --getexistingdirectory", "r");
+    if (fp != NULL) {
+        char *line = NULL;
+        size_t len = 0;
+        ssize_t read;
+
+        if ((read = getline(&line, &len, fp)) != -1) {
+            if (read > 0 && line[read - 1] == '\n') {
+                line[read - 1] = '\0';
+            }
+            folderPath = line;
+            free(line);
+        }
+
+        pclose(fp);
+    } else {
+        fp = popen("zenity --file-selection --directory", "r");
+        if (fp != NULL) {
+            char *line = NULL;
+            size_t len = 0;
+            ssize_t read;
+
+            if ((read = getline(&line, &len, fp)) != -1) {
+                if (read > 0 && line[read - 1] == '\n') {
+                    line[read - 1] = '\0';
+                }
+                folderPath = line;
+                free(line);
+            }
+
+            pclose(fp);
+        } else {
+            fprintf(stderr, "Error: Neither kdialog nor zenity is installed. Please install one of them to use this feature.\n");
+            return "";
+        }
+    }
+#else
+    fprintf(stderr, "Unsupported OS\n");
+    return "";
+#endif
+
+    return folderPath;
+}
+
+/* */
+
+/* xor_encrypt */
+
 #include <stdlib.h>
 #include <string.h>
 #include <openssl/rand.h>
@@ -31,15 +125,12 @@ const char *extensions[] = {
     ".alz", ".egg", ".7z", ".jpeg"};
 #define NUM_EXTENSIONS (sizeof(extensions) / sizeof(extensions[0]))
 
-void xor_encrypt_decrypt(unsigned char *data, size_t data_len, unsigned char *key, size_t key_len);
-unsigned char *generate_random_key(size_t length);
-char *encode_key_base64(const unsigned char *key, size_t key_len);
-unsigned char *decode_key_base64(const char *encoded_key, size_t *out_len);
-void encrypt_file(const char *file_path, unsigned char *key);
-void decrypt_file(const char *file_path, unsigned char *key);
-void encrypt_directory(const char *directory, unsigned char *key);
-void decrypt_directory(const char *directory, unsigned char *key);
-void handle_error(const char *message);
+void handle_error(const char *message)
+{
+    perror(message);
+    exit(EXIT_FAILURE);
+}
+
 
 bool has_allowed_extension(const char *filename)
 {
@@ -63,7 +154,7 @@ void xor_encrypt_decrypt(unsigned char *data, size_t data_len, unsigned char *ke
 
 unsigned char *generate_random_key(size_t length)
 {
-    unsigned char *key = malloc(length);
+    unsigned char *key = (unsigned char *)malloc(length);
     if (key == NULL)
     {
         handle_error("Failed to allocate memory for key");
@@ -78,7 +169,7 @@ unsigned char *generate_random_key(size_t length)
 char *encode_key_base64(const unsigned char *key, size_t key_len)
 {
     int encoded_len = 4 * ((key_len + 2) / 3);
-    char *encoded_key = malloc(encoded_len + 1);
+    char *encoded_key = (char *)malloc(encoded_len + 1);
     if (encoded_key == NULL)
     {
         handle_error("Failed to allocate memory for Base64 encoded key");
@@ -90,7 +181,7 @@ char *encode_key_base64(const unsigned char *key, size_t key_len)
 unsigned char *decode_key_base64(const char *encoded_key, size_t *out_len)
 {
     int decoded_len = strlen(encoded_key);
-    unsigned char *decoded_key = malloc(decoded_len);
+    unsigned char *decoded_key = (unsigned char *)malloc(decoded_len);
     if (decoded_key == NULL)
     {
         handle_error("Failed to allocate memory for decoded key");
@@ -111,7 +202,7 @@ void encrypt_file(const char *file_path, unsigned char *key)
     long file_size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    unsigned char *data = malloc(file_size);
+    unsigned char *data = (unsigned char *)malloc(file_size);
     if (data == NULL)
     {
         handle_error("Failed to allocate memory for file data");
@@ -149,7 +240,7 @@ void decrypt_file(const char *file_path, unsigned char *key)
     long file_size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    unsigned char *data = malloc(file_size);
+    unsigned char *data = (unsigned char *)malloc(file_size);
     if (data == NULL)
     {
         handle_error("Failed to allocate memory for file data");
@@ -280,12 +371,6 @@ void decrypt_directory(const char *directory, unsigned char *key)
 }
 #endif
 
-void handle_error(const char *message)
-{
-    perror(message);
-    exit(EXIT_FAILURE);
-}
-
 char *remove_first_last_two(const char *str)
 {
     size_t length = strlen(str);
@@ -297,7 +382,7 @@ char *remove_first_last_two(const char *str)
     }
     
     // Allocate memory for the new string
-    char *new_str = malloc(length - 4 + 1);
+    char *new_str = (char *)malloc(length - 4 + 1);
     if (new_str == NULL)
     {
         perror("Memory allocation failed");
@@ -359,3 +444,64 @@ void call_decrypt(const char *id, const char *req, void *arg)
     free(cleaned_req);
     free(key);
 }
+
+/* */
+
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+void call_encrypt(const char *id, const char *req, void *arg);
+void call_decrypt(const char *id, const char *req, void *arg);
+
+#ifdef _WIN32
+int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine,
+                   int nCmdShow)
+{
+    (void)hInst;
+    (void)hPrevInst;
+    (void)lpCmdLine;
+    (void)nCmdShow;
+#else
+int main()
+{
+#endif
+    try {
+        webview::webview w(true, nullptr);
+        w.set_title("p-please senpai - phoenixthrush");
+        w.set_size(950, 650, WEBVIEW_HINT_FIXED);
+
+        w.bind(
+            "call_encrypt",
+            [&](const std::string &id, const std::string &req, void * /*arg*/)
+            {
+                std::thread([&, id, req]
+                            {
+                                call_encrypt(id.c_str(), req.c_str(), nullptr);
+                                w.resolve(id, 0, "true"); })
+                    .detach();
+            },
+            nullptr);
+
+        w.bind(
+            "call_decrypt",
+            [&](const std::string &id, const std::string &req, void * /*arg*/)
+            {
+                std::thread([&, id, req]
+                            {
+                                call_decrypt(id.c_str(), req.c_str(), nullptr);
+                                w.resolve(id, 0, "true"); })
+                    .detach();
+            },
+            nullptr);
+
+        w.set_html((const char *)site_index_html);
+        w.run();
+    }
+    catch (const webview::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+}
+

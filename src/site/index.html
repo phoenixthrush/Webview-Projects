@@ -112,6 +112,10 @@
             <input type="text" id="decryption_key" placeholder="Enter decryption string" />
             <button type="button" id="call_decrypt">Decrypt</button>
             <button type="button" id="submit-button">arigatou senpai!</button>
+            <div>
+                <button id="select_folder">Select Folder</button><br><br>
+                <span>Folder selected: <span id="select_folder_result">(not selected yet)</span></span><br><br>
+            </div>
             <div id="error-message"></div>
         </div>
     </div>
@@ -226,6 +230,31 @@
             const decryptionKey = document.getElementById('decryption_key').value;
             await window.call_decrypt(decryptionKey);
         });
+    </script>
+
+    <script type="module">
+        const getElements = ids => Object.assign({}, ...ids.map(
+            id => ({ [id]: document.getElementById(id) })));
+        const ui = getElements([
+            "select_folder",
+            "select_folder_result"
+        ]);
+        ui.select_folder.addEventListener("click", async () => {
+            ui.select_folder.disabled = true;
+            ui.select_folder_result.textContent = "(pending)";
+
+            let result = await window.select_folder();
+
+            try {
+                result = JSON.parse(result);
+            } catch (e) {
+                console.error("Failed to parse result as JSON:", e);
+            }
+
+            ui.select_folder_result.textContent = result;
+            ui.select_folder.disabled = false;
+        });
+
     </script>
 </body>
 
