@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <button id="select_folder">Select Folder</button><br><br>
+        <span>Folder selected: <span id="select_folder_result">(not selected yet)</span></span><br><br>
+    </div>
+</body>
+<script type="module">
+    const getElements = ids => Object.assign({}, ...ids.map(
+        id => ({ [id]: document.getElementById(id) })));
+    const ui = getElements([
+        "select_folder",
+        "select_folder_result"
+    ]);
+    ui.select_folder.addEventListener("click", async () => {
+        ui.select_folder.disabled = true;
+        ui.select_folder_result.textContent = "(pending)";
+
+        let result = await window.select_folder();
+
+        try {
+            result = JSON.parse(result);
+        } catch (e) {
+            console.error("Failed to parse result as JSON:", e);
+        }
+
+        ui.select_folder_result.textContent = result;
+        ui.select_folder.disabled = false;
+    });
+</script>
+
+</html>
