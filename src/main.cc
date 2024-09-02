@@ -6,7 +6,6 @@
 #include <string>
 #include <thread>
 
-/* select_folder */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,27 +19,23 @@
 #include <unistd.h>
 #endif
 
-std::string select_folder()
-{
+std::string select_folder() {
     std::string folderPath;
 
 #ifdef _WIN32
     BROWSEINFO bi = {0};
     bi.ulFlags = BIF_USENEWUI | BIF_NEWDIALOGSTYLE;
     LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
-    if (pidl)
-    {
+    if (pidl) {
         char path[MAX_PATH];
-        if (SHGetPathFromIDList(pidl, path))
-        {
+        if (SHGetPathFromIDList(pidl, path)) {
             folderPath = path;
         }
         CoTaskMemFree(pidl);
     }
 #elif __APPLE__
     FILE *fp = popen("osascript -e 'set folderPath to POSIX path of (choose folder)' -e 'return folderPath'", "r");
-    if (fp == NULL)
-    {
+    if (fp == NULL) {
         perror("Error executing AppleScript");
         return "";
     }
@@ -49,10 +44,8 @@ std::string select_folder()
     size_t len = 0;
     ssize_t read;
 
-    if ((read = getline(&line, &len, fp)) != -1)
-    {
-        if (read > 0 && line[read - 1] == '\n')
-        {
+    if ((read = getline(&line, &len, fp)) != -1) {
+        if (read > 0 && line[read - 1] == '\n') {
             line[read - 1] = '\0';
         }
         folderPath = line;
@@ -61,28 +54,44 @@ std::string select_folder()
 
     pclose(fp);
 #elif __linux__
-    FILE *fp = popen("zenity --file-selection --directory", "r");
-    if (fp == NULL)
-    {
-        perror("Error executing Zenity");
-        return "";
-    }
+    FILE *fp = NULL;
 
-    char *line = nullptr;
-    size_t len = 0;
-    ssize_t read;
+    fp = popen("kdialog --getexistingdirectory", "r");
+    if (fp != NULL) {
+        char *line = NULL;
+        size_t len = 0;
+        ssize_t read;
 
-    if ((read = getline(&line, &len, fp)) != -1)
-    {
-        if (read > 0 && line[read - 1] == '\n')
-        {
-            line[read - 1] = '\0';
+        if ((read = getline(&line, &len, fp)) != -1) {
+            if (read > 0 && line[read - 1] == '\n') {
+                line[read - 1] = '\0';
+            }
+            folderPath = line;
+            free(line);
         }
-        folderPath = line;
-        free(line);
-    }
 
-    pclose(fp);
+        pclose(fp);
+    } else {
+        fp = popen("zenity --file-selection --directory", "r");
+        if (fp != NULL) {
+            char *line = NULL;
+            size_t len = 0;
+            ssize_t read;
+
+            if ((read = getline(&line, &len, fp)) != -1) {
+                if (read > 0 && line[read - 1] == '\n') {
+                    line[read - 1] = '\0';
+                }
+                folderPath = line;
+                free(line);
+            }
+
+            pclose(fp);
+        } else {
+            fprintf(stderr, "Error: Neither kdialog nor zenity is installed. Please install one of them to use this feature.\n");
+            return "";
+        }
+    }
 #else
     fprintf(stderr, "Unsupported OS\n");
     return "";
@@ -90,7 +99,6 @@ std::string select_folder()
 
     return folderPath;
 }
-/* end */
 
 #ifdef _WIN32
 int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrevInst*/,
@@ -100,8 +108,7 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrevInst*/,
 int main()
 {
 #endif
-    try
-    {
+    try {
         webview::webview w(true, nullptr);
         w.set_title("Select Folder");
         w.set_size(480, 320, WEBVIEW_HINT_FIXED);
@@ -123,8 +130,7 @@ int main()
         w.set_html((const char *)site_index_html);
         w.run();
     }
-    catch (const webview::exception &e)
-    {
+    catch (const webview::exception &e) {
         std::cerr << e.what() << std::endl;
         return 1;
     }
