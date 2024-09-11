@@ -5,8 +5,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-set (CMAKE_CXX_STANDARD 11)
-
 include(FetchContent)
 
 FetchContent_Declare(
@@ -17,4 +15,4 @@ FetchContent_MakeAvailable(webview)
 
 add_executable(example WIN32)
 target_sources(example PRIVATE main.cc)
-target_link_libraries(example PRIVATE webview::headers)
+target_link_libraries(example PRIVATE webview::core)
