@@ -19,7 +19,7 @@ git clone https://github.com/phoenixthrush/Webview-Projects.git
 
 ### Keygen Template
 
-<img src=".github/keygen-template.png" alt="keygen-template.png" style="width: 50%;">
+<img src="https://raw.githubusercontent.com/phoenixthrush/Webview-Projects/refs/heads/main/.github/keygen-template.png" alt="keygen-template.png" style="width: 50%;">
 
 ### Usage
 
@@ -32,7 +32,7 @@ make
 
 ### Keygen Template PyWebview
 
-<img src=".github/keygen-template-pywebview.png" alt="keygen-template-pywebview.png"  style="width: 50%;">
+<img src="https://raw.githubusercontent.com/phoenixthrush/Webview-Projects/refs/heads/main/.github/keygen-template-pywebview.png" alt="keygen-template-pywebview.png"  style="width: 50%;">
 
 ### Usage
 
@@ -54,7 +54,7 @@ compile
 
 ### Senpai Malware
 
-![senpai-malware.png](.github/senpai-malware.png)
+![senpai-malware.png](https://raw.githubusercontent.com/phoenixthrush/Webview-Projects/refs/heads/main/.github/senpai-malware.png)
 
 ### Usage
 
@@ -67,7 +67,7 @@ make
 
 ### Yuuko BSOD
 
-![yuuko-bsod.png](.github/yuuko-bsod.png)
+![yuuko-bsod.png](https://raw.githubusercontent.com/phoenixthrush/Webview-Projects/refs/heads/main/.github/yuuko-bsod.png)
 
 ### Usage
 
